@@ -1,30 +1,42 @@
 class Sudoku
-  attr_accessor :problem
+  attr_accessor :problem, :l
   def initialize(problem)
     @problem = problem
+    @l = [0,0]
   end
 
   def solve
-    buffer = 0
-    while problem.flatten.include? 0
-      break if buffer > 2000
-      (0..8).each do |row|
-        (0..8).each do |column|
-          if get_digit(row, column) == 0
-            answer = get_only_possible_digit(row, column)
-            problem[row][column] = answer
-            if answer != 0
-              display
-            else
-              buffer += 1
-            end
-          else
-            next
-          end
+    if !find_empty
+      return problem
+    end
+
+    row = l[0]
+    col = l[1]
+
+    (1..9).each do |num|
+      if is_possible_digit?(num, row, col)
+        problem[row][col] = num
+        if solve
+          return problem
+        end
+
+        problem[row][col] = 0
+      end
+    end
+    false
+  end
+
+  def find_empty
+    (0..8).each do |x|
+      (0..8).each do |y|
+        if problem[x][y] == 0
+          l[0] = x
+          l[1] = y
+          return true
         end
       end
     end
-    problem
+    false
   end
 
   def get_digit(row, column)
@@ -91,3 +103,15 @@ class Sudoku
     puts "--------------------------"
   end
 end
+
+pp Sudoku.new([
+  [8, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 3, 6, 0, 0, 0, 0, 0],
+  [0, 7, 0, 0, 9, 0, 2, 0, 0],
+  [0, 5, 0, 0, 0, 7, 0, 0, 0],
+  [0, 0, 0, 0, 4, 5, 7, 0, 0],
+  [0, 0, 0, 1, 0, 0, 0, 3, 0],
+  [0, 0, 1, 0, 0, 0, 0, 6, 8],
+  [0, 0, 8, 5, 0, 0, 0, 1, 0],
+  [0, 9, 0, 0, 0, 0, 4, 0, 0]
+]).solve
