@@ -39,10 +39,6 @@ class Sudoku
     false
   end
 
-  def get_digit(row, column)
-    problem[row][column]
-  end
-
   def get_box(x, y)
     problem.transpose[y*3..y*3+2].each_with_object([]) do |arr, memo|
       memo << arr[x*3..x*3+2]
@@ -77,17 +73,6 @@ class Sudoku
     results.count(true) == 1 && results[digit-1]
   end
 
-  def get_only_possible_digit(row, column)
-    result = 0
-    (1..9).each do |num|
-      if is_only_possible_digit?(num, row, column)
-        result = num
-        break
-      end
-    end
-    result
-  end
-
   def display
     puts "--------------------------"
     problem.each do |line|
@@ -103,15 +88,3 @@ class Sudoku
     puts "--------------------------"
   end
 end
-
-pp Sudoku.new([
-  [8, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 3, 6, 0, 0, 0, 0, 0],
-  [0, 7, 0, 0, 9, 0, 2, 0, 0],
-  [0, 5, 0, 0, 0, 7, 0, 0, 0],
-  [0, 0, 0, 0, 4, 5, 7, 0, 0],
-  [0, 0, 0, 1, 0, 0, 0, 3, 0],
-  [0, 0, 1, 0, 0, 0, 0, 6, 8],
-  [0, 0, 8, 5, 0, 0, 0, 1, 0],
-  [0, 9, 0, 0, 0, 0, 4, 0, 0]
-]).solve
